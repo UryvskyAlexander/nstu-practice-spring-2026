@@ -4,7 +4,7 @@
 	"name": "Debian",
 	"image": "mcr.microsoft.com/devcontainers/base:trixie",
 	"hostRequirements": {
-		"gpu": true
+		"gpu": "optional"
 	},
 	"customizations": {
 		"vscode": {
