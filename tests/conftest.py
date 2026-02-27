@@ -3,6 +3,7 @@ import inspect
 import pkgutil
 from typing import Protocol, runtime_checkable
 
+import allure
 import pytest
 
 
@@ -63,9 +64,16 @@ def student(request: pytest.FixtureRequest) -> str:
 
 
 @pytest.fixture(scope="module")
-def assignment(student: str, topic: str, all_assignments: list[type[Assignment]]) -> type[Assignment]:
-    res = list(filter(lambda t: t.get_student() == student and t.get_topic() == topic, all_assignments))
-    assert len(res) <= 1
-    if not res:
+def filter_assignment(student: str, topic: str, all_assignments: list[type[Assignment]]) -> list[type[Assignment]]:
+    return list(filter(lambda t: t.get_student() == student and t.get_topic() == topic, all_assignments))
+
+
+@pytest.fixture
+def assignment(student: str, topic: str, filter_assignment: list[type[Assignment]]) -> type[Assignment]:
+    allure.dynamic.label("topic", topic)
+    allure.dynamic.label("student", student)
+
+    assert len(filter_assignment) <= 1
+    if not filter_assignment:
         pytest.skip("Assignment not found")
-    return res[0]
+    return filter_assignment[0]
