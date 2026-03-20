@@ -64,8 +64,8 @@ class TestLinearLayer:
         bias = rng.uniform(-k, k, out_features).astype(np.float32)
 
         model_weights, model_bias = model.parameters
-        np.testing.assert_allclose(model_weights, weights)
-        np.testing.assert_allclose(model_bias, bias)
+        np.testing.assert_allclose(model_weights, weights, strict=True)
+        np.testing.assert_allclose(model_bias, bias, strict=True)
 
     @pytest.mark.parametrize("batch_size", [None, 1, 5])
     def test_forward(self, assignment_finder: AssignmentFinder, in_features: int, out_features: int, batch_size: int):
@@ -82,7 +82,7 @@ class TestLinearLayer:
         y = x @ weights.T + bias
 
         model_y = model.forward(x)
-        np.testing.assert_allclose(model_y, y)
+        np.testing.assert_allclose(model_y, y, strict=True)
 
     @pytest.mark.parametrize("batch_size", [1, 4])
     def test_backward(self, assignment_finder: AssignmentFinder, in_features: int, out_features: int, batch_size: int):
@@ -102,9 +102,9 @@ class TestLinearLayer:
         model.forward(x)
         model_dx = model.backward(dy)
         model_dw, model_db = model.grad
-        np.testing.assert_allclose(model_dx, dx)
-        np.testing.assert_allclose(model_dw, dw)
-        np.testing.assert_allclose(model_db, db)
+        np.testing.assert_allclose(model_dx, dx, strict=True)
+        np.testing.assert_allclose(model_dw, dw, strict=True)
+        np.testing.assert_allclose(model_db, db, strict=True)
 
 
 class TestReLULayer:
@@ -125,7 +125,7 @@ class TestReLULayer:
         y = np.maximum(x, 0)
 
         model_y = model.forward(x)
-        np.testing.assert_allclose(model_y, y)
+        np.testing.assert_allclose(model_y, y, strict=True)
 
     @pytest.mark.parametrize("shape", [(1,), (1, 5), (5, 3)])
     def test_backward(self, assignment_finder: AssignmentFinder, shape: tuple[int]):
@@ -140,7 +140,7 @@ class TestReLULayer:
 
         model.forward(x)
         model_dx = model.backward(dy)
-        np.testing.assert_allclose(model_dx, dx)
+        np.testing.assert_allclose(model_dx, dx, strict=True)
         assert model.grad == ()
 
 
@@ -162,7 +162,7 @@ class TestSigmoidLayer:
         y = sigmoid(x)
 
         model_y = model.forward(x)
-        np.testing.assert_allclose(model_y, y)
+        np.testing.assert_allclose(model_y, y, strict=True)
 
     @pytest.mark.parametrize("shape", [(1,), (1, 5), (5, 3)])
     def test_backward(self, assignment_finder: AssignmentFinder, shape: tuple[int]):
@@ -177,7 +177,7 @@ class TestSigmoidLayer:
 
         model.forward(x)
         model_dx = model.backward(dy)
-        np.testing.assert_allclose(model_dx, dx)
+        np.testing.assert_allclose(model_dx, dx, strict=True)
         assert model.grad == ()
 
 
@@ -199,7 +199,7 @@ class TestLogSoftmaxLayer:
         y = log_softmax(x)
 
         model_y = model.forward(x)
-        np.testing.assert_allclose(model_y, y)
+        np.testing.assert_allclose(model_y, y, strict=True)
 
     @pytest.mark.parametrize("shape", [(2,), (1, 5), (5, 3)])
     def test_backward(self, assignment_finder: AssignmentFinder, shape: tuple[int]):
@@ -214,7 +214,7 @@ class TestLogSoftmaxLayer:
 
         model.forward(x)
         model_dx = model.backward(dy)
-        np.testing.assert_allclose(model_dx, dx)
+        np.testing.assert_allclose(model_dx, dx, strict=True)
         assert model.grad == ()
 
 
@@ -241,7 +241,7 @@ class TestModel:
         assert isinstance(model, Layer)
         model_parameters = model.parameters
         for actual, expected in zip(model_parameters, parameters, strict=True):
-            np.testing.assert_allclose(actual, expected)
+            np.testing.assert_allclose(actual, expected, strict=True)
 
     @pytest.mark.parametrize("batch_size", [None, 1, 5])
     def test_forward(self, assignment_finder: AssignmentFinder, batch_size: int):
@@ -259,7 +259,7 @@ class TestModel:
             y = layer.forward(y)
 
         model_y = model.forward(x)
-        np.testing.assert_allclose(model_y, y)
+        np.testing.assert_allclose(model_y, y, strict=True)
 
     @pytest.mark.parametrize("batch_size", [1, 5])
     def test_backward(self, assignment_finder: AssignmentFinder, batch_size: int):
@@ -281,8 +281,8 @@ class TestModel:
 
         model.forward(x)
         model_dx = model.backward(dy)
-        np.testing.assert_allclose(model_dx, dx)
+        np.testing.assert_allclose(model_dx, dx, strict=True)
 
         model_grad = model.grad
         for actual, expected in zip(model_grad, grad, strict=True):
-            np.testing.assert_allclose(actual, expected)
+            np.testing.assert_allclose(actual, expected, strict=True)
