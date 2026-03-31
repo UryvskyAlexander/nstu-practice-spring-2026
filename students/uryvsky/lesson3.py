@@ -131,17 +131,17 @@ class Model(Layer):
 
     @property
     def parameters(self) -> Sequence[np.ndarray]:
-        params  = []
+        params = []
         for layer in self.layers:
             params.extend(layer.parameters)
-        return (params)
+        return params
 
     @property
     def grad(self) -> Sequence[np.ndarray]:
         grads = []
         for layer in self.layers:
             grads.extend(layer.grad)
-        return (grads)
+        return grads
 
 
 class MSELoss(Loss): ...
