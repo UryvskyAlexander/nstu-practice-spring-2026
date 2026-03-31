@@ -16,12 +16,6 @@ class Layer(Protocol):
     def grad(self) -> Sequence[np.ndarray]: ...
 
 
-class Loss(Protocol):
-    def forward(self, x: np.ndarray, y: np.ndarray) -> np.ndarray: ...
-
-    def backward(self) -> np.ndarray: ...
-
-
 class LinearLayer(Layer):
     def __init__(self, in_features: int, out_features: int, rng: np.random.Generator | None = None) -> None:
         if rng is None:
@@ -144,18 +138,6 @@ class Model(Layer):
         return grads
 
 
-class MSELoss(Loss): ...
-
-
-class BCELoss(Loss): ...
-
-
-class NLLLoss(Loss): ...
-
-
-class CrossEntropyLoss(Loss): ...
-
-
 class Exercise:
     @staticmethod
     def get_student() -> str:
@@ -184,24 +166,3 @@ class Exercise:
     @staticmethod
     def create_model(*layers: Layer) -> Layer:
         return Model(*layers)
-
-    @staticmethod
-    def create_mse_loss() -> Loss:
-        return MSELoss()
-
-    @staticmethod
-    def create_bce_loss() -> Loss:
-        return BCELoss()
-
-    @staticmethod
-    def create_nll_loss() -> Loss:
-        return NLLLoss()
-
-    @staticmethod
-    def create_cross_entropy_loss() -> Loss:
-        return CrossEntropyLoss()
-
-    @staticmethod
-    def train_model(
-        model: Layer, loss: Loss, x: np.ndarray, y: np.ndarray, lr: float, n_epoch: int, batch_size: int
-    ) -> None: ...
