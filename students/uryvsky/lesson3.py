@@ -187,7 +187,7 @@ class CrossEntropyLoss(Loss):
         self.grad = (softmax - self.grad) / x.shape[0]
 
         return -np.mean(log_probabl[np.arange(x.shape[0]), y])
-    
+
     def backward(self) -> np.ndarray:
         return self.grad
 
@@ -241,11 +241,10 @@ class Exercise:
     def train_model(
         model: Layer, loss: Loss, x: np.ndarray, y: np.ndarray, lr: float, n_epoch: int, batch_size: int
     ) -> None:
-            for _ in range(n_epoch):
-                for i in range(0, x.shape[0], batch_size):
-                    sol = model.forward(x[i: i + batch_size])
-                    loss.forward(sol, y[i: i + batch_size])
-                    model.backward(loss.backward())
-                    for param, grad in zip(model.parameters, model.grad, strict=True):
-                        param -= grad * lr
-
+        for _ in range(n_epoch):
+            for i in range(0, x.shape[0], batch_size):
+                sol = model.forward(x[i : i + batch_size])
+                loss.forward(sol, y[i : i + batch_size])
+                model.backward(loss.backward())
+                for param, grad in zip(model.parameters, model.grad, strict=True):
+                    param -= grad * lr
